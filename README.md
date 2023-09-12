@@ -10,4 +10,4 @@
 ## PRACTICE INM RAN
 
 
-### wow
+### group 303 CMC MSU
