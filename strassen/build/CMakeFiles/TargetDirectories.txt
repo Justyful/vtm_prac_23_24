@@ -1,0 +1,4 @@
+/Users/justyful/vtm_prac_23_24/strassen/build/CMakeFiles/matrix.dir
+/Users/justyful/vtm_prac_23_24/strassen/build/CMakeFiles/main.dir
+/Users/justyful/vtm_prac_23_24/strassen/build/CMakeFiles/edit_cache.dir
+/Users/justyful/vtm_prac_23_24/strassen/build/CMakeFiles/rebuild_cache.dir
