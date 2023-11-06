@@ -9,10 +9,9 @@ class Matrix {
     int n;
     
     public:
-    Matrix(int size, bool random = false, bool fill = true) {
+    Matrix(int size, bool random = false) {
         n = size;
         m = new double [n * n];
-        if (!fill) return;
         if (random) {
             for (int i = 0; i < n * n; i++) {
                 m[i] = rand() % 10;
@@ -67,7 +66,7 @@ class Matrix {
         return new_m;
     }
     
-    double& operator[](int k) const {
+    double operator[](int k) const {
         return m[k];
     }
     
@@ -130,6 +129,50 @@ class Matrix {
         }
     }
     
+    Matrix get11() const {
+        int halfn = n/2;
+        Matrix ans(halfn, false);
+        double* ansm = ans.getm();
+        for (int i = 0; i < halfn; i++) {
+            for (int j = 0; j < halfn; j++) {
+                ansm[i * halfn + j] = m[i * n + j];
+            }
+        }
+        return ans;
+    }
+    Matrix get12() const {
+        int halfn = n/2;
+        Matrix ans(n / 2, false);
+        double* ansm = ans.getm();
+        for (int i = 0; i < halfn; i++) {
+            for (int j = halfn; j < n; j++) {
+                ansm[i * halfn + j - halfn] = m[i * n + j];
+            }
+        }
+        return ans;
+    }
+    Matrix get21() const {
+        int halfn = n/2;
+        Matrix ans(n / 2, false);
+        double* ansm = ans.getm();
+        for (int i = halfn; i < n; i++) {
+            for (int j = 0; j < halfn; j++) {
+                ansm[(i - halfn) * halfn + j] = m[i * n + j];
+            }
+        }
+        return ans;
+    }
+    Matrix get22() const {
+        int halfn = n/2;
+        Matrix ans(halfn, false);
+        double* ansm = ans.getm();
+        for (int i = halfn; i < n; i++) {
+            for (int j = halfn; j < n; j++) {
+                ansm[(i - halfn) * halfn + j - halfn] = m[i * n + j];
+            }
+        }
+        return ans;
+    }
 };
 
 double F(const Matrix& m) {
@@ -183,4 +226,37 @@ void print2(const Matrix& m1, const Matrix& m2, int w) {
         cout << endl;
     }
     cout << endl;
+}
+
+Matrix assemble(const Matrix& a11, const Matrix& a12, const Matrix& a21, const Matrix& a22) {
+    if (a11.size() != a12.size() || a12.size() != a21.size() || a21.size() != a22.size()) {
+        cout << "error assemble" << endl;
+        exit(1);
+    }
+    int n  = a11.size();
+    int n2 = n * 2;
+    Matrix ans(n2, false);
+    double* ansm = ans.getm();
+    double* a11m = a11.getm();
+    double* a12m = a12.getm();
+    double* a21m = a21.getm();
+    double* a22m = a22.getm();
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            ansm[i * n2 + j] = a11m[i * n + j];
+        }
+        for (int j = n; j < n2; j++) {
+            ansm[i * n2 + j] = a12m[i * n + j - n];
+        }
+    }
+    
+    for (int i = n; i < n2; i++) {
+        for (int j = 0; j < n; j++) {
+            ansm[i * n2 + j] = a21m[(i - n) * n + j];
+        }
+        for (int j = n; j < n2; j++) {
+            ansm[i * n2 + j] = a22m[(i - n) * n + j - n];
+        }
+    }
+    return ans;
 }

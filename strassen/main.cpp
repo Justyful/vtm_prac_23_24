@@ -20,16 +20,53 @@ Matrix Strassen(const Matrix& a, const Matrix& b) {
     if (n == STRASS_CONST && n == b.size()) {
         return a * b;
     }
-    
-    Matrix a11 = a.get11();
-    Matrix a12 = a.get12();
-    Matrix a21 = a.get21();
-    Matrix a22 = a.get22();
-    
-    Matrix b11 = b.get11();
-    Matrix b12 = b.get12();
-    Matrix b21 = b.get21();
-    Matrix b22 = b.get22();
+    int halfn = n/2;
+
+    Matrix a11(halfn, false, false);
+    Matrix a12(halfn, false, false);
+    Matrix a21(halfn, false, false);
+    Matrix a22(halfn, false, false);
+
+    for (int i = 0; i < halfn; i++) {
+        for (int j = 0; j < halfn; j++) {
+            a11[i * halfn + j] = a[i * n + j];
+        }
+        for (int j = halfn; j < n; j++) {
+            a12[i * halfn + j - halfn] = a[i * n + j];
+        }
+    }
+
+    for (int i = halfn; i < n; i++) {
+        for (int j = 0; j < halfn; j++) {
+            a21[(i - halfn) * halfn + j] = a[i * n + j];
+        }
+        for (int j = halfn; j < n; j++) {
+            a22[(i - halfn) * halfn + j - halfn] = a[i * n + j];
+        }
+    }
+
+    Matrix b11(halfn, false, false);
+    Matrix b12(halfn, false, false);
+    Matrix b21(halfn, false, false);
+    Matrix b22(halfn, false, false);
+
+    for (int i = 0; i < halfn; i++) {
+        for (int j = 0; j < halfn; j++) {
+            b11[i * halfn + j] = b[i * n + j];
+        }
+        for (int j = halfn; j < n; j++) {
+            b12[i * halfn + j - halfn] = b[i * n + j];
+        }
+    }
+
+    for (int i = halfn; i < n; i++) {
+        for (int j = 0; j < halfn; j++) {
+            b21[(i - halfn) * halfn + j] = b[i * n + j];
+        }
+        for (int j = halfn; j < n; j++) {
+            b22[(i - halfn) * halfn + j - halfn] = b[i * n + j];
+        }
+    }
     
     Matrix d  = Strassen(a11 + a22, b11 + b22);
     Matrix d1 = Strassen(a12 - a22, b21 + b22);
@@ -39,18 +76,32 @@ Matrix Strassen(const Matrix& a, const Matrix& b) {
     Matrix v1 = Strassen(a22, b21 - b11);
     Matrix v2 = Strassen(a11, b12 - b22);
 
-    Matrix ans11 = d + d1 + v1 - h1;
-    Matrix ans12 = v2 + h1;
-    Matrix ans21 = v1 + h2;
-    Matrix ans22 = d + d2 + v2 - h2;
-    
-    Matrix ans = assemble(ans11, ans12, ans21, ans22);
+    Matrix ans(n, false, false);
+
+    for (int i = 0; i < halfn; i++) {
+        for (int j = 0; j < halfn; j++) {
+            ans[i * n + j] = d[i * halfn + j] + d1[i * halfn + j] + v1[i * halfn + j] - h1[i * halfn + j];
+        }
+        for (int j = halfn; j < n; j++) {
+            ans[i * n + j] = v2[i * halfn + j - halfn] + h1[i * halfn + j - halfn];
+        }
+    }
+
+    for (int i = halfn; i < n; i++) {
+        for (int j = 0; j < halfn; j++) {
+            ans[i * n + j] = v1[(i - halfn) * halfn + j] + h2[(i - halfn) * halfn + j];
+        }
+        for (int j = halfn; j < n; j++) {
+            ans[i * n + j] = d[(i - halfn) * halfn + j - halfn] + d2[(i - halfn) * halfn + j - halfn] + 
+                            v2[(i - halfn) * halfn + j - halfn] - h2[(i - halfn) * halfn + j - halfn];
+        }
+    }
     return ans;
 }
 
 int main() {
     std::srand(std::time(nullptr));
-
+    
     for (int i = 2; i < 513; i *= 2) {
         std::ofstream file;
         string name = "../tests/strass=" + to_string(i) + ".csv";
@@ -61,7 +112,7 @@ int main() {
         file << "STRASS_CONST = " << i << endl;
         for (int n = i; n < 4097; n *= 2) {
             file << n << ",";
-            cout << n << ",";
+            cout << setw(5) << n << ",";
             Matrix x = Matrix(n, true);
             Matrix y = Matrix(n, true);
             //print(x, 3);
@@ -72,7 +123,7 @@ int main() {
             auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> duration1 = end - start;
             file << duration1.count() << ",";
-            cout << duration1.count() << ",";
+            cout << setw(13) << duration1.count() << ",";
             
             Matrix x1 = x.extend();
             Matrix y1 = y.extend();
@@ -81,9 +132,9 @@ int main() {
             end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> duration2 = end - start;
             file << duration2.count() << ",";
-            cout << duration2.count() << ",";
+            cout << setw(13) << duration2.count() << ",";
             file << duration2.count() - duration1.count() << ",";
-            cout << duration2.count() - duration1.count() << ",";
+            cout << setw(13) << duration2.count() - duration1.count() << ",";
             Matrix a = z - w;
             file << C(a) << " " << F(a) << '\n';
             cout << C(a) << " " << F(a) << endl;

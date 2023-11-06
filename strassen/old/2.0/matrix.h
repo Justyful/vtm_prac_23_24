@@ -20,9 +20,15 @@ class Matrix {
     Matrix operator+ (const Matrix& mat) const;
     Matrix operator- (const Matrix& mat) const;
     void operator= (const Matrix& mat);
+    
+    Matrix get11() const;
+    Matrix get12() const;
+    Matrix get21() const;
+    Matrix get22() const;
 };
 
 double F(const Matrix& m);
 double C(const Matrix& m);
 void print(const Matrix& m, int w);
 void print2(const Matrix& m1, const Matrix& m2, int w); 
+Matrix assemble(const Matrix& a11, const Matrix& a12, const Matrix& a21, const Matrix& a22);
