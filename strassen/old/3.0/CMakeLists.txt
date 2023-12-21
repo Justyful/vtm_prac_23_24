@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(main 
 	LANGUAGES CXX)
 
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -fsanitize=address")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
 
 add_library(matrix matrix.cpp matrix.h)
 #add_library(strassen strassen.cpp strassen.h)

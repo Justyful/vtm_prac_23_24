@@ -20,7 +20,7 @@ int main() {
     
     for (int i = 2; i < 513; i *= 2) {
         std::ofstream file;
-        string name = "../results/strass=" + to_string(i) + ".csv";
+        string name = "results/strass=" + to_string(i) + ".csv";
         cout << name << endl;
         file.open(name);
         cout << "STRASS_CONST = " << i << endl;
