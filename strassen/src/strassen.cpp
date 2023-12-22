@@ -1,10 +1,12 @@
 #include "strassen.h"
-
-
+#include <iostream>
+constexpr int STRASS_CONST = 128;
+constexpr int BLOCK_CONST = 64;
 void Strassen(const Matrix& a, const Matrix& b, Matrix& ans) {
     int n = a.size();
+    //std::cout << n << std::endl;
     if (n == STRASS_CONST && n == b.size()) {
-        ans.mulSubMatrices(a, b);
+        ans.blockMulSubMatrices(a, b, BLOCK_CONST);
         return;
     }
     int halfn = n/2;

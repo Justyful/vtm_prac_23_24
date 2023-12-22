@@ -97,18 +97,51 @@ using std::setw;
         }
     }
 
-    void Matrix::mulSubMatrices(const Matrix& arg1, const Matrix& arg2) {
+    void Matrix::blockMulSubMatrices(const Matrix& arg1, const Matrix& arg2, int block_size) {
         if ((arg1.n != arg2.n) || (arg1.n != n)) {
-            cout << "ERROR: mulSubMatrices" << endl;
+            cout << "ERROR: blockMulSubMatrices" << endl;
         }
         double* m1 = arg1.m;
         double* m2 = arg2.m;
-        for (int i = 0; i < n; i++) {
-            for (int k = 0; k < n; k++) {
-                for (int j = 0; j < n; j++)
-                    m[i * n + j] += m1[i * n + k] * m2[k * n + j];
+        int block_n = n / block_size;
+
+        double* a = new double[block_size*block_size];
+        double* b = new double[block_size*block_size];
+        double* c = new double[block_size*block_size];
+
+        for (int bi = 0; bi < block_n; bi++) {
+            for (int bj = 0; bj < block_n; bj++) {
+                for (int i = 0; i < block_size; i++) {
+                    for (int j = 0; j < block_size; j++) {
+                        c[i*block_size + j] = 0;
+                    }
+                }
+                for (int bk = 0; bk < block_n; bk++) {
+                    for (int i = 0; i < block_size; i++) {
+                        for (int j = 0; j < block_size; j++) {
+                            a[i*block_size + j] = m1[(bi * block_size + i) * n + (bk * block_size + j)];
+                            b[i*block_size + j] = m2[(bk * block_size + i) * n + (bj * block_size + j)];
+                        }
+                    }
+
+                    for (int i = 0; i < block_size; i++) {
+                        for (int k = 0; k < block_size; k++) {
+                            for (int j = 0; j < block_size; j++) {
+                                c[i*block_size + j] += a[i*block_size + k] * b[k*block_size + j];
+                            }
+                        }
+                    }
+                }
+                for (int i = 0; i < block_size; i++) {
+                    for (int j = 0; j < block_size; j++) {
+                        m[(bi * block_size + i) * n + (bj * block_size + j)] = c[i*block_size + j];
+                    }
+                }
             }
         }
+        delete[] a;
+        delete[] b;
+        delete[] c;
     }
     
     int Matrix::size() const {

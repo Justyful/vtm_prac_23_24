@@ -17,7 +17,22 @@ using std::to_string;
 
 int main() {
     std::srand(std::time(nullptr));
-    for (int n = 256; n < 4097; n *= 2) {
+
+    // int n = 1024;
+    // Matrix a(n, true);
+    // Matrix b(n, true);
+    // Matrix c(n);
+    // Matrix d(n);
+    // Matrix e(n);
+
+    // d = a*b;
+    // c.blockMulSubMatrices(a, b, 4);
+    // e = c - d;
+    // cout << F(e) << " " << C(e) << endl;
+
+
+
+    for (int n = 2048; n < 4097; n *= 2) {
         cout << setw(5) << n << ",";
         Matrix x(n, true);
         Matrix y(n, true);

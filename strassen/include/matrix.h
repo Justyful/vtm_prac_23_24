@@ -18,7 +18,7 @@ class Matrix {
 
     void addSubMatrix(double alpha, const Matrix& sub, int i1, int j1);
     void addSubMatrices(double alpha, const Matrix& arg1, const Matrix& arg2);
-    void mulSubMatrices(const Matrix& arg1, const Matrix& arg2);
+    void blockMulSubMatrices(const Matrix& arg1, const Matrix& arg2, int block_size);
     
     int size() const;
     void set_size(int k);
