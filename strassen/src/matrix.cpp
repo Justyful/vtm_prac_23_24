@@ -1,19 +1,17 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+
+
+#include "matrix.h"
+
+
 using std::cout;
 using std::endl;
 using std::setw;
-class Matrix {
-    double *m;
-    int n;
-    int i0;
-    int j0;
-    int sub_n;
 
-    
-    public:
-    Matrix(int size, bool random = false, bool fill = true, bool alloc = true) {
+
+    Matrix::Matrix(int size, bool random, bool fill, bool alloc) {
         i0 = 0;
         j0 = 0;
         sub_n = 0;
@@ -31,7 +29,7 @@ class Matrix {
             }
         }
     }
-    Matrix(const Matrix& mat) {
+    Matrix::Matrix(const Matrix& mat) {
         n = mat.size();
         m = new double [n * n];
         for (int i = 0; i < n * n; i++) {
@@ -39,13 +37,13 @@ class Matrix {
         }
     }
 
-    Matrix(const Matrix& a, int i0, int j0, int size) : m(a.m), n(a.n), i0(i0), j0(j0), sub_n(size) {}
+    Matrix::Matrix(const Matrix& a, int i0, int j0, int size) : m(a.m), n(a.n), i0(i0), j0(j0), sub_n(size) {}
 
-    ~Matrix() {
+    Matrix::~Matrix() {
         if (sub_n == 0) delete[] m;
     }
 
-    void setSubMatrix(const Matrix& a, int i, int j, int size) {
+    void Matrix::setSubMatrix(const Matrix& a, int i, int j, int size) {
         if ((i0 + size > a.n) || (j0 + size > a.n)) {
             cout << "ERROR: setSubMatrix" << endl;
         }
@@ -56,7 +54,7 @@ class Matrix {
         sub_n = size;
     }
 
-    void eqSubMatrix(const Matrix& sub) {
+    void Matrix::eqSubMatrix(const Matrix& sub) {
         if (sub.n < 1) {
             cout << "ERROR: addSubMatrix2" << endl;
         }
@@ -70,7 +68,7 @@ class Matrix {
         }
     }
 
-    void addSubMatrix(double alpha, const Matrix& sub, int i1, int j1) {
+    void Matrix::addSubMatrix(double alpha, const Matrix& sub, int i1, int j1) {
         if (sub.n < 1) {
             cout << "ERROR: addSubMatrix2" << endl;
         }
@@ -82,7 +80,7 @@ class Matrix {
         }
     }
 
-    void addSubMatrices(double alpha, const Matrix& arg1, const Matrix& arg2) {
+    void Matrix::addSubMatrices(double alpha, const Matrix& arg1, const Matrix& arg2) {
         if ((arg1.sub_n != arg2.sub_n) || (arg1.sub_n != n) || (arg1.n != arg2.n)) {
             cout << "ERROR: addSubMatrices" << endl;
         }
@@ -99,7 +97,7 @@ class Matrix {
         }
     }
 
-    void mulSubMatrices(const Matrix& arg1, const Matrix& arg2) {
+    void Matrix::mulSubMatrices(const Matrix& arg1, const Matrix& arg2) {
         if ((arg1.n != arg2.n) || (arg1.n != n)) {
             cout << "ERROR: mulSubMatrices" << endl;
         }
@@ -113,19 +111,19 @@ class Matrix {
         }
     }
     
-    int size() const {
+    int Matrix::size() const {
         return n;
     }
     
-    void setn(int k) {
+    void Matrix::setn(int k) {
         n = k;   
     }
     
-    double* getm() const {
+    double* Matrix::getm() const {
         return m;
     }
 
-    void zero() {
+    void Matrix::zero() {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 m[i * n + j] = 0;
@@ -133,7 +131,7 @@ class Matrix {
         }
     }
     
-    Matrix extend() const {
+    Matrix Matrix::extend() const {
         int new_n = pow(2, ceil(log2(n)));
         Matrix new_m(new_n, false);
         for (int i = 0; i < n; i++) {
@@ -152,11 +150,15 @@ class Matrix {
         return new_m;
     }
     
-    double& operator[](int k) const {
+    double& Matrix::operator[](int k) {
+        return m[k];
+    }
+
+    double Matrix::operator[](int k) const {
         return m[k];
     }
     
-    Matrix operator* (const Matrix& mat) const {
+    Matrix Matrix::operator* (const Matrix& mat) const {
         if (n != mat.size()) {
             cout << "ERROR WRONG SIZES" << endl;
             exit(1);
@@ -174,7 +176,7 @@ class Matrix {
         return ans;
     }
     
-    Matrix operator+ (const Matrix& mat) const {
+    Matrix Matrix::operator+ (const Matrix& mat) const {
         if (n != mat.size()) {
             cout << "ERROR WRONG SIZES" << endl;
             exit(1);
@@ -190,7 +192,7 @@ class Matrix {
         return ans;
     }
     
-    Matrix operator- (const Matrix& mat) const {
+    Matrix Matrix::operator- (const Matrix& mat) const {
         if (n != mat.size()) {
             cout << "ERROR WRONG SIZES" << endl;
             exit(1);
@@ -206,7 +208,7 @@ class Matrix {
         return ans;
     }
     
-    void operator= (const Matrix& mat) {
+    void Matrix::operator= (const Matrix& mat) {
         delete[] m;
         n = mat.size();
         m = new double [n * n];
@@ -214,8 +216,6 @@ class Matrix {
             m[i] = mat[i];
         }
     }
-    
-};
 
 double F(const Matrix& m) {
     double ans = 0.0;

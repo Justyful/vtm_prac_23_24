@@ -2,6 +2,9 @@
 class Matrix {
     double *m;
     int n;
+    int i0;
+    int j0;
+    int sub_n;
     
     public:
     Matrix(int size, bool random = false, bool fill = true, bool alloc = true);
@@ -19,11 +22,13 @@ class Matrix {
     
     int size() const;
     void set_size(int k);
-    double* get_m() const;
+    double* getm() const;
     void zero();
+    void setn(int k);
     
     Matrix extend() const;
     
+    double &operator[](int k);
     double operator[](int k) const;
     Matrix operator* (const Matrix& mat) const;
     Matrix operator+ (const Matrix& mat) const;

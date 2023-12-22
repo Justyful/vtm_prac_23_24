@@ -1,5 +1,7 @@
-#include "matrix.cpp"
-void Strassen(const Matrix& a, const Matrix& b, Matrix& ans, int STRASS_CONST) {
+#include "strassen.h"
+
+
+void Strassen(const Matrix& a, const Matrix& b, Matrix& ans) {
     int n = a.size();
     if (n == STRASS_CONST && n == b.size()) {
         ans.mulSubMatrices(a, b);
@@ -21,7 +23,7 @@ void Strassen(const Matrix& a, const Matrix& b, Matrix& ans, int STRASS_CONST) {
 
     arg2.addSubMatrices(1, sub1, sub2); //arg2 = b11 + b22
     
-    Strassen(arg1, arg2, res, STRASS_CONST); //d = (a11 + a22)(b11 + b22)
+    Strassen(arg1, arg2, res); //d = (a11 + a22)(b11 + b22)
 
     ans.addSubMatrix(1, res, 0, 0); //ans11 += d
     ans.addSubMatrix(1, res, halfn, halfn); //ans22 += d
@@ -39,7 +41,7 @@ void Strassen(const Matrix& a, const Matrix& b, Matrix& ans, int STRASS_CONST) {
 
     arg2.addSubMatrices(1, sub1, sub2); //arg2 = b21 + b22
 
-    Strassen(arg1, arg2, res, STRASS_CONST); //d1
+    Strassen(arg1, arg2, res); //d1
 
     ans.addSubMatrix(1, res, 0, 0); //ans11 += d1
     res.zero();
@@ -56,7 +58,7 @@ void Strassen(const Matrix& a, const Matrix& b, Matrix& ans, int STRASS_CONST) {
 
     arg2.addSubMatrices(1, sub1, sub2); //arg2 = b11 + b12
 
-    Strassen(arg1, arg2, res, STRASS_CONST); //d2
+    Strassen(arg1, arg2, res); //d2
 
     ans.addSubMatrix(1, res, halfn, halfn); //ans22 += d2
     res.zero();
@@ -72,7 +74,7 @@ void Strassen(const Matrix& a, const Matrix& b, Matrix& ans, int STRASS_CONST) {
 
     arg2.eqSubMatrix(sub1); //arg2 = b22
 
-    Strassen(arg1, arg2, res, STRASS_CONST); //h1
+    Strassen(arg1, arg2, res); //h1
 
     ans.addSubMatrix(-1, res, 0, 0); //ans11 -= h1
     ans.addSubMatrix(1, res, 0, halfn); //ans12 += h1
@@ -89,7 +91,7 @@ void Strassen(const Matrix& a, const Matrix& b, Matrix& ans, int STRASS_CONST) {
 
     arg2.eqSubMatrix(sub1); //arg2 = b11
 
-    Strassen(arg1, arg2, res, STRASS_CONST); //h2
+    Strassen(arg1, arg2, res); //h2
 
     ans.addSubMatrix(1, res, halfn, 0); //ans21 += h2
     ans.addSubMatrix(-1, res, halfn, halfn); //ans22 -= h2
@@ -106,7 +108,7 @@ void Strassen(const Matrix& a, const Matrix& b, Matrix& ans, int STRASS_CONST) {
 
     arg2.addSubMatrices(-1, sub1, sub2); //arg2 = b21 - b11
 
-    Strassen(arg1, arg2, res, STRASS_CONST); //v1
+    Strassen(arg1, arg2, res); //v1
 
     ans.addSubMatrix(1, res, 0, 0); //ans11 += v1
     ans.addSubMatrix(1, res, halfn, 0); //ans21 += v1
@@ -123,7 +125,7 @@ void Strassen(const Matrix& a, const Matrix& b, Matrix& ans, int STRASS_CONST) {
 
     arg2.addSubMatrices(-1, sub1, sub2); //arg2 = b12 - b22
 
-    Strassen(arg1, arg2, res, STRASS_CONST); //v2
+    Strassen(arg1, arg2, res); //v2
 
     ans.addSubMatrix(1, res, 0, halfn); //ans12 += v2
     ans.addSubMatrix(1, res, halfn, halfn); //ans22 += v2
