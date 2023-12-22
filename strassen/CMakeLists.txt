@@ -4,13 +4,13 @@ project(test
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Ofast")
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/include)
 
 include_directories(include)
 
-add_library(matrix)
 add_library(strassen)
-add_library(strassenf)
 
 add_subdirectory(src)
 add_subdirectory(test)
+
 
